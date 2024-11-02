@@ -2,17 +2,30 @@
 interface Props {
   name: string;
   url: string;
+  isBig?: boolean;
 }
 
-const { name, url } = Astro.props;
+const { name, url, isBig = false } = Astro.props;
 const id = url.split("/").at(-2);
 
 const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
 ---
 
-<a href=`/pokemons/${name}`
-  class="border border-gray-300/40 rounded-lg flex items-center flex-col p-4 hover:scale-110 transition-transform duration-300 ease-in-out"
+<a
+  href=`/pokemons/${name}`
+  class:list={[
+    "border-gray-300/40 rounded-lg flex items-center flex-col p-4 transition-transform duration-300 ease-in-out",
+    { border: !isBig },
+    { "hover:scale-110": !isBig },
+  ]}
 >
-  <img src={imgUrl} alt={name} class="size-40 object-cover" />
-  <p class="capitalize">{name}</p>
-</a>
+  <img
+    src={imgUrl}
+    alt={name}
+    class="size-40 object-cover"
+    transition:name={`${name}-img`}
+    />
+    <p class="capitalize">{name}</p>
+  </a>
+  
+  <!-- transition:name={`${name}-img`} en firefox no funciona, va dentro de img -->
