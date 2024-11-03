@@ -1,6 +1,8 @@
 ---
+import Navbar from "@/components/layout/Navbar.astro";
 import { ViewTransitions } from "astro:transitions";
 
+// informacion por defecto
 const siteInfo = {
   title: "Pokemons 1ra Generation",
   description: "Lista de Pokemons 1ra Generation",
@@ -42,6 +44,7 @@ const {
     <ViewTransitions />
   </head>
   <body>
+    <Navbar />
     <slot />
   </body>
 </html>

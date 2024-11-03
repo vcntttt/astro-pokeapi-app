@@ -3,6 +3,8 @@ import type { GetStaticPaths } from "astro";
 import type { PokemonListResponse } from "@/types/pokemon";
 import Layout from "@/layouts/Layout.astro";
 import PokemonCard from "@/components/PokemonCard.astro";
+import Title from "@/components/layout/Title.astro";
+import Container from "@/components/Container.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
@@ -18,18 +20,32 @@ const title = "Pokemons 1ra Generation";
 ---
 
 <Layout title={title}>
-  <h1>Vista Paginada</h1>
-  <section class="grid gap-4 grid-cols-6 mb-4">
+  <Title>Vista Paginada</Title>
+  <Container>
     {page.data.map(({ name, url }) => <PokemonCard name={name} url={url} />)}
-  </section>
-  <section class="flex justify-between">
+  </Container>
+  <section class="flex justify-between mt-4">
     <div>
-      <a href={page.url.prev} class:list={["btn", {
-        "disabled": !page.url.prev
-      }]} href="">Anterior</a>
-      <a href={page.url.next} class:list={["btn", {
-        "disabled": !page.url.next
-      }]} href="">Siguiente</a>
+      <a
+        href={page.url.prev}
+        class:list={[
+          "btn",
+          {
+            disabled: !page.url.prev,
+          },
+        ]}
+        href="">Anterior</a
+      >
+      <a
+        href={page.url.next}
+        class:list={[
+          "btn",
+          {
+            disabled: !page.url.next,
+          },
+        ]}
+        href="">Siguiente</a
+      >
     </div>
     <p>Página {page.currentPage} de {page.lastPage}</p>
   </section>

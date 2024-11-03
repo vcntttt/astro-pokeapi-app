@@ -22,7 +22,10 @@ const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites
   <img
     src={imgUrl}
     alt={name}
-    class="size-40 object-cover"
+    class:list={["object-cover", {
+      "size-40": !isBig,
+      "size-64": isBig,
+    }]}
     transition:name={`${name}-img`}
     />
     <p class="capitalize">{name}</p>

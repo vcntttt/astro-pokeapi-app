@@ -1,0 +1,14 @@
+---
+import Counter from "@/components/Counter";
+import Title from "@/components/layout/Title.astro";
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="Favoritos">
+  <Title>Islas</Title>
+  <Counter
+    client:only="solid-js"
+    transition:persist="counter"
+    transition:persist-props
+  />
+</Layout>

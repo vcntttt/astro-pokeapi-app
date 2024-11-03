@@ -3,6 +3,8 @@ import type { GetStaticPaths } from "astro";
 import type { PokemonListResponse } from "../../types/pokemon";
 import Layout from "../../layouts/Layout.astro";
 import PokemonCard from "../../components/PokemonCard.astro";
+import Title from "@/components/layout/Title.astro";
+import { Icon } from "astro-icon/components";
 
 export const getStaticPaths = (async () => {
   const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
@@ -25,5 +27,66 @@ const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites
   description={`Información sobre el pokémon ${name}`}
   img={imgUrl}
 >
-  <PokemonCard name={name} url={url} isBig />
+  <div class="max-w-3xl mx-auto mt-2">
+    <div class="flex gap-x-4">
+      <Title>{name}</Title>
+      <button id="btn-favorite" data-name={name} data-id={id} class="text-red-500">
+        <Icon name={"empty-heart"} size={36} data-outline />
+        <Icon name={"fill-heart"} size={36} class="hidden" data-filled />
+      </button>
+    </div>
+    <button onclick="history.back()" class="text-blue-500">Regresar</button>
+    <PokemonCard name={name} url={url} isBig />
+  </div>
 </Layout>
+
+<script>
+import type { FavoritePokemon } from "@/types/pokemon";
+
+  function handlePageLoad() {
+    let favorites : FavoritePokemon[] = JSON.parse(localStorage.getItem("favorites") ?? "[]");
+
+    const favBtn = document.querySelector("#btn-favorite") as HTMLButtonElement; // para asegurar que no es nulo;
+
+    if (!favBtn) return;
+
+    // dataset -> fn de js para obtener data attributes
+    const name = favBtn.dataset.name ?? "";
+    const id = favBtn.dataset.id ?? "";
+    const isFavorite = favorites.some((pokemon) => pokemon.name === name);
+
+    const heartOutline = favBtn.querySelector("[data-outline]") as HTMLElement;
+    const heartFilled = favBtn.querySelector("[data-filled]") as HTMLElement;
+
+    if (isFavorite) {
+      heartOutline.classList.add("hidden");
+      heartFilled.classList.remove("hidden");
+    }
+
+    const toggleFavorite = () => {
+      const isFavorite = favorites.some((pokemon) => pokemon.name === name);
+
+      if (isFavorite) {
+        // remover el pokemon de favoritos
+        favorites = favorites.filter((pokemon) => pokemon.name !== name);
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+
+        heartOutline.classList.toggle("hidden");
+        heartFilled.classList.toggle("hidden");
+      } else {
+        // agregar el pokemon a favoritos
+        favorites.push({ name, id });
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+      }
+    }
+
+    favBtn.addEventListener("click", () => {
+      heartOutline.classList.toggle("hidden");
+      heartFilled.classList.toggle("hidden");
+      toggleFavorite();
+    });
+  }
+
+  // page-load: cuando se carga el dom
+  document.addEventListener("astro:page-load", handlePageLoad);
+</script>
